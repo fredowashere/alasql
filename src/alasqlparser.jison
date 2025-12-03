@@ -1465,8 +1465,6 @@ StringValue
 		{ $$ = new yy.StringValue({value: $1.substr(1,$1.length-2).replace(/(\\\')/g,"'").replace(/(\'\')/g,"'")}); }
 	| NSTRING
 		{ $$ = new yy.StringValue({value: $1.substr(2,$1.length-3).replace(/(\\\')/g,"'").replace(/(\'\')/g,"'")}); }
-	| DBLSTRING
-		{ $$ = new yy.StringValue({value: $1.substr(1,$1.length-2).replace(/(\\\")/g,'"').replace(/(\"\")/g,'"')}); }
 	;
 
 NullValue
