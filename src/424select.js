@@ -43,30 +43,39 @@ function compileSelectStar(query, aliases, joinstar) {
 
 		// Check if this is a Table or other
 		if (joinstar && alasql.options.joinstar == 'json') {
-			sp += "r['" + alias + "']={};";
+			sp += "r['" + escapeq(alias) + "']={};";
 		}
 
 		if (columns && columns.length > 0) {
 			columns.forEach(function (tcol) {
 				const escapedColumnId = escapeq(tcol.columnid);
+				const escapedAlias = escapeq(alias);
 				if (joinstar && alasql.options.joinstar == 'underscore') {
 					ss.push(
-						"'" + alias + '_' + escapedColumnId + "':p['" + alias + "']['" + escapedColumnId + "']"
+						"'" +
+							escapedAlias +
+							'_' +
+							escapedColumnId +
+							"':p['" +
+							escapedAlias +
+							"']['" +
+							escapedColumnId +
+							"']"
 					);
 				} else if (joinstar && alasql.options.joinstar == 'json') {
 					//				ss.push('\''+alias+'_'+tcol.columnid+'\':p[\''+alias+'\'][\''+tcol.columnid+'\']');
 					sp +=
 						"r['" +
-						alias +
+						escapedAlias +
 						"']['" +
 						escapedColumnId +
 						"']=p['" +
-						alias +
+						escapedAlias +
 						"']['" +
 						escapedColumnId +
 						"'];";
 				} else {
-					var value = "p['" + alias + "']['" + escapedColumnId + "']";
+					var value = "p['" + escapedAlias + "']['" + escapedColumnId + "']";
 					if (!columnIds[tcol.columnid]) {
 						var key = "'" + escapedColumnId + "':";
 						ss.push(key + value);
@@ -102,7 +111,7 @@ function compileSelectStar(query, aliases, joinstar) {
 			//					console.log(60,alias,columns);
 
 			// if column not exist, then copy all
-			sp += 'var w=p["' + alias + '"];for(var k in w){r[k]=w[k]};';
+			sp += 'var w=p["' + escapeq(alias) + '"];for(var k in w){r[k]=w[k]};';
 			//console.log(777, sp);
 			query.dirtyColumns = true;
 		}
@@ -435,9 +444,9 @@ yy.Select.prototype.compileSelect2 = function (query, params) {
 				// Use Object.keys to get column names and access by index
 				s += "var keys=Object.keys(r);r['" + key + "']=r[keys[" + v.columnIndex + ']];';
 			} else if (v instanceof yy.Column && query.xcolumns[v.columnid]) {
-				s += "r['" + key + "']=r['" + v.columnid + "'];";
+				s += "r['" + key + "']=r['" + escapeq(v.columnid) + "'];";
 			} else if (v instanceof yy.ParamValue && query.xcolumns[params[v.param]]) {
-				s += "r['" + key + "']=r['" + params[v.param] + "'];";
+				s += "r['" + key + "']=r['" + escapeq(params[v.param]) + "'];";
 			} else {
 				s += "r['" + key + "']=" + v.toJS('p', query.defaultTableid, query.defcols) + ';';
 			}
@@ -560,7 +569,7 @@ yy.Select.prototype.compileSelectGroup1 = function (query) {
 			}
 */
 			//			if(col.as) {
-			s += "r['" + colas + "']=";
+			s += "r['" + escapeq(colas) + "']=";
 			//			// } else {
 			//			// 	s += 'r[\''+escapeq()+'\']=';
 			//			// };
@@ -587,7 +596,6 @@ yy.Select.prototype.compileSelectGroup1 = function (query) {
 				// 	}
 				// };
 				// s += kg;
-//				console.log(s);
 			// }
 //			s += col.toJS('g','')+';';
 */
@@ -635,7 +643,7 @@ yy.Select.prototype.compileSelectGroup2 = function (query) {
 		if (isInGroup) {
 			// For columns in GROUP BY, use the GROUP BY column's nick if available
 			var groupNick = (groupCol && groupCol.nick) || col.nick;
-			s += "r['" + (col.as || col.nick) + "']=g['" + groupNick + "'];";
+			s += "r['" + escapeq(col.as || col.nick) + "']=g['" + escapeq(groupNick) + "'];";
 		}
 	});
 
@@ -657,7 +665,7 @@ yy.Select.prototype.compileSelectGroup2 = function (query) {
 				// Use Object.keys to get column names and access by index
 				s += "var keys=Object.keys(r);r['" + key + "']=r[keys[" + v.columnIndex + ']];';
 			} else if (v instanceof yy.Column && query.groupColumns[v.columnid]) {
-				s += "r['" + key + "']=r['" + v.columnid + "'];";
+				s += "r['" + key + "']=r['" + escapeq(v.columnid) + "'];";
 			} else {
 				s += "r['" + key + "']=" + v.toJS('g', '') + ';';
 			}

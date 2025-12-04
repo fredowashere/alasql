@@ -238,6 +238,7 @@ SELECT ASCII('ÿ'); -- 255 - Latin small letter y with diaeresis
 
 		tests = (/\/\*([\S\s]+)\*\//m.exec(tests) || ['', ''])[1];
 
+		var testCases = [];
 		tests
 			.replace(/\r/g, '')
 			.trim()
@@ -256,18 +257,26 @@ SELECT ASCII('ÿ'); -- 255 - Latin small letter y with diaeresis
 					var tt = test.split('--');
 					var sql = tt[0].trim();
 					var etalon = '' + tt[1].split(' - ')[0].trim();
-					var res = '' + alasql('VALUE OF ' + sql);
-					//console.log(tt,sql,etalon);
 
 					runFn(test, function (done) {
+						var res = '' + alasql('VALUE OF ' + sql);
 						assert.equal(etalon, res);
 						done();
 					});
 				} else {
 					if (test.trim().length > 0) {
-						alasql(test);
+						testCases.push(test);
 					}
 				}
 			});
+
+		// Execute setup SQL in beforeAll instead of at load time
+		if (testCases.length > 0) {
+			before(function () {
+				testCases.forEach(function (sql) {
+					alasql(sql);
+				});
+			});
+		}
 	}
 });
