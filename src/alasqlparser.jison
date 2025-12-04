@@ -357,7 +357,7 @@ Literal
 	| BRALITERAL
 		{ $$ = doubleq($1.substr(1,$1.length-2)); }
 	| DBLSTRING
-		{ $$ = $1.substr(1,$1.length-2).replace(/(\\\")/g,'"').replace(/(\"\")/g,'"'); }
+		{ $$ = unescapeDblQuotes($1.substr(1,$1.length-2)); }
 	| error NonReserved
 		{ $$ = $2.toLowerCase() }
 	;

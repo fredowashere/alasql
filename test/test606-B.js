@@ -61,4 +61,16 @@ describe('Test Alias Quotes - Column aliases with different quote types', functi
 		var res = alasql('SELECT 42 "Alias Name"');
 		assert.deepEqual(res, [{'Alias Name': 42}]);
 	});
+
+	it('9. Double quotes with escaped double quotes', function () {
+		// Test that \" inside double quotes is properly unescaped
+		var res = alasql('SELECT 1 AS "Column with \\"quotes\\""');
+		assert.deepEqual(res, [{'Column with "quotes"': 1}]);
+	});
+
+	it('10. Double quotes with doubled double quotes', function () {
+		// Test that "" inside double quotes is properly unescaped (SQL standard)
+		var res = alasql('SELECT 1 AS "Column with ""quotes"""');
+		assert.deepEqual(res, [{'Column with "quotes"': 1}]);
+	});
 });

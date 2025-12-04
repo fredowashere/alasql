@@ -139,6 +139,21 @@ var doubleqq = (utils.doubleqq = function (s) {
 });
 
 /**
+  Unescape double-quoted strings (for SQL identifiers)
+  Handles escaped double quotes (\\") and doubled double quotes ("")
+  @param {string} s Source string
+  @return {string} Unescaped string
+  @example
+
+  \\" => "
+  "" => "
+
+  */
+var unescapeDblQuotes = (utils.unescapeDblQuotes = function (s) {
+	return s.replace(/(\\\")/g, '"').replace(/(\"\")/g, '"');
+});
+
+/**
   Cut BOM first character for UTF-8 files (for merging two files)
   @param {string} s Source string
   @return {string} Replaced string
