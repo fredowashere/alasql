@@ -30,7 +30,10 @@ describe('Test Alias Quotes - Column aliases with different quote types', functi
 	});
 
 	it('5. Double quotes for identifiers vs single quotes for strings', function () {
-		var data = [{col1: 1, col2: 2}, {col1: 3, col2: 4}];
+		var data = [
+			{col1: 1, col2: 2},
+			{col1: 3, col2: 4},
+		];
 		// Double quotes for identifier, single quotes for string
 		var res = alasql('SELECT col1 AS "Column One", \'test\' AS str FROM ?', [data]);
 		assert.deepEqual(res, [
@@ -45,9 +48,7 @@ describe('Test Alias Quotes - Column aliases with different quote types', functi
 			'SELECT a AS `Backtick Alias`, b AS [Bracket Alias], c AS "Double Quote Alias" FROM ?',
 			[data]
 		);
-		assert.deepEqual(res, [
-			{'Backtick Alias': 1, 'Bracket Alias': 2, 'Double Quote Alias': 3},
-		]);
+		assert.deepEqual(res, [{'Backtick Alias': 1, 'Bracket Alias': 2, 'Double Quote Alias': 3}]);
 	});
 
 	it('7. Double quotes with special characters', function () {
