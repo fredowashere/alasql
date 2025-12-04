@@ -12,3 +12,4 @@ yarn-error.log
 package-lock.json
 /dist/
 pnpm-lock.yaml
+build/
