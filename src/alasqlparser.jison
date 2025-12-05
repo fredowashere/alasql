@@ -1185,10 +1185,6 @@ ResultColumn
 		{ $1.as = $3; $$ = $1;}
 	| Expression NUMBER
 		{ $1.as = $2; $$ = $1;}
-	| Expression AS StringValue
-		{ $1.as = $3; $$ = $1;}
-	| Expression StringValue
-		{ $1.as = $2; $$ = $1;}
 	| Expression
 		{ $$ = $1; }
 	;
@@ -1465,6 +1461,8 @@ StringValue
 		{ $$ = new yy.StringValue({value: $1.substr(1,$1.length-2).replace(/(\\\')/g,"'").replace(/(\'\')/g,"'")}); }
 	| NSTRING
 		{ $$ = new yy.StringValue({value: $1.substr(2,$1.length-3).replace(/(\\\')/g,"'").replace(/(\'\')/g,"'")}); }
+	| DBLSTRING
+		{ $$ = new yy.StringValue({value: $1.substr(1,$1.length-2).replace(/(\"\")/g,'"')}); }
 	;
 
 NullValue
