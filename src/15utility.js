@@ -149,8 +149,10 @@ var doubleqq = (utils.doubleqq = function (s) {
   "" => "
 
   */
+var unescapeDblQuotesRegex1 = /(\\\")/g;
+var unescapeDblQuotesRegex2 = /(\"\")/g;
 var unescapeDblQuotes = (utils.unescapeDblQuotes = function (s) {
-	return s.replace(/(\\\")/g, '"').replace(/(\"\")/g, '"');
+	return s.replace(unescapeDblQuotesRegex1, '"').replace(unescapeDblQuotesRegex2, '"');
 });
 
 /**
