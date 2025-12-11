@@ -73,4 +73,16 @@ describe('Test Alias Quotes - Column aliases with different quote types', functi
 		var res = alasql('SELECT 1 AS "Column with ""quotes"""');
 		assert.deepEqual(res, [{'Column with "quotes"': 1}]);
 	});
+
+	it('11. Double quotes with escaped backslashes', function () {
+		// Test that \\\\ is properly unescaped to \\ (escaped backslash becomes single backslash)
+		var res = alasql('SELECT 1 AS "Path\\\\to\\\\file"');
+		assert.deepEqual(res, [{'Path\\to\\file': 1}]);
+	});
+
+	it('12. Double quotes with escaped backslash and quote combination', function () {
+		// Test that \\\\" is properly unescaped to \\" (escaped backslash + escaped quote)
+		var res = alasql('SELECT 1 AS "Test\\\\\\"value"');
+		assert.deepEqual(res, [{'Test\\"value': 1}]);
+	});
 });

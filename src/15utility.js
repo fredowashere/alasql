@@ -140,19 +140,33 @@ var doubleqq = (utils.doubleqq = function (s) {
 
 /**
   Unescape double-quoted strings (for SQL identifiers)
-  Handles escaped double quotes (\\") and doubled double quotes ("")
+  Handles escaped backslashes (\\\\), escaped double quotes (\\") and doubled double quotes ("")
   @param {string} s Source string
   @return {string} Unescaped string
   @example
 
+  \\\\ => \\
   \\" => "
   "" => "
+  \\\\\\" => \\"
 
   */
-var unescapeDblQuotesRegex1 = /(\\\")/g;
-var unescapeDblQuotesRegex2 = /(\"\")/g;
+var unescapeDblQuotesRegex1 = /(\\\\)/g;
+var unescapeDblQuotesRegex2 = /(\\\")/g;
+var unescapeDblQuotesRegex3 = /(\"\")/g;
+var unescapeDblQuotesPlaceholder = '\x00ESCAPED_BACKSLASH\x00';
 var unescapeDblQuotes = (utils.unescapeDblQuotes = function (s) {
-	return s.replace(unescapeDblQuotesRegex1, '"').replace(unescapeDblQuotesRegex2, '"');
+	// First, preserve escaped backslashes by replacing \\\\ with a placeholder
+	// Then unescape \\" to ", then "" to "
+	// Finally, restore escaped backslashes as single backslash
+	return s
+		.replace(unescapeDblQuotesRegex1, unescapeDblQuotesPlaceholder)
+		.replace(unescapeDblQuotesRegex2, '"')
+		.replace(unescapeDblQuotesRegex3, '"')
+		.replace(
+			new RegExp(unescapeDblQuotesPlaceholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+			'\\'
+		);
 });
 
 /**
