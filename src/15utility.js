@@ -155,6 +155,10 @@ var unescapeDblQuotesRegex1 = /(\\\\)/g;
 var unescapeDblQuotesRegex2 = /(\\\")/g;
 var unescapeDblQuotesRegex3 = /(\"\")/g;
 var unescapeDblQuotesPlaceholder = '\x00ESCAPED_BACKSLASH\x00';
+var unescapeDblQuotesRegex4 = new RegExp(
+	unescapeDblQuotesPlaceholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+	'g'
+);
 var unescapeDblQuotes = (utils.unescapeDblQuotes = function (s) {
 	// First, preserve escaped backslashes by replacing \\\\ with a placeholder
 	// Then unescape \\" to ", then "" to "
@@ -163,10 +167,7 @@ var unescapeDblQuotes = (utils.unescapeDblQuotes = function (s) {
 		.replace(unescapeDblQuotesRegex1, unescapeDblQuotesPlaceholder)
 		.replace(unescapeDblQuotesRegex2, '"')
 		.replace(unescapeDblQuotesRegex3, '"')
-		.replace(
-			new RegExp(unescapeDblQuotesPlaceholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
-			'\\'
-		);
+		.replace(unescapeDblQuotesRegex4, '\\');
 });
 
 /**
