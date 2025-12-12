@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/alasql@4"></script>
+    <script src="../common.js"></script>
+    <script>
+        alasql(`
+CREATE TABLE projects (internal_id number, project_name string, team_size number, team_lead string, income number);
+INSERT INTO projects VALUES (1384,'MapReduce',100,'Jeffrey Dean',0), (2855,'Windows',1000,'Bill Gates',100500), (5961,'Snapchat',3,'Evan Spiegel',2000);
+`);
+        const received = alasql(`
+SELECT project_name, team_lead, income FROM projects ORDER BY internal_id;
+`);
+        const expected = [
+            {
+                "project_name": "MapReduce",
+                "team_lead": "Jeffrey Dean",
+                "income": 0
+            },
+            {
+                "project_name": "Windows",
+                "team_lead": "Bill Gates",
+                "income": 100500
+            },
+            {
+                "project_name": "Snapchat",
+                "team_lead": "Evan Spiegel",
+                "income": 2000
+            }
+        ];
+        console.log(deepCompare(received, expected) ? 'OK' : 'FAIL');
+    </script>
+</body>
+</html>

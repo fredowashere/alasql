@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/alasql@4"></script>
+    <script src="../common.js"></script>
+    <script>
+        alasql(`
+CREATE TABLE countries (name string, continent string, population number);
+INSERT INTO countries VALUES ('Austria','Europe',8767919), ('Belize','North America',375909), ('Botswana','Africa',2230905), ('Cambodia','Asia',15626444), ('Cameroon','Africa',22709892);
+`);
+        const received = alasql(`
+SELECT name, continent, population FROM countries WHERE continent='Africa' ORDER BY name;
+`);
+        const expected = [
+            {
+                "name": "Botswana",
+                "continent": "Africa",
+                "population": 2230905
+            },
+            {
+                "name": "Cameroon",
+                "continent": "Africa",
+                "population": 22709892
+            }
+        ];
+        
+        console.log({ received, expected });
+        console.log(deepCompare(received, expected) ? 'OK' : 'FAIL');
+    </script>
+</body>
+</html>
