@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/alasql@4"></script>
+    <script src="../common.js"></script>
+    <script>
+        alasql(`
+CREATE TABLE scholarships (id number, scholarship number);
+INSERT INTO scholarships VALUES (1,12000), (2,18000), (3,24000), (4,15000), (5,21000), (6,13000);
+`);
+        const received = alasql(`
+SELECT id, scholarship / 12 as scholarship FROM scholarships;
+`);
+        const expected = [
+            {
+                "id": 1,
+                "scholarship": 1000
+            },
+            {
+                "id": 2,
+                "scholarship": 1500
+            },
+            {
+                "id": 3,
+                "scholarship": 2000
+            },
+            {
+                "id": 4,
+                "scholarship": 1250
+            },
+            {
+                "id": 5,
+                "scholarship": 1750
+            },
+            {
+                "id": 6,
+                "scholarship": 1083.3333333333333
+            }
+        ];
+        
+        console.log({ received, expected });
+        console.log(deepCompare(received, expected) ? 'OK' : 'FAIL');
+    </script>
+</body>
+</html>
